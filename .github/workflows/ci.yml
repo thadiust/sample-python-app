@@ -1,0 +1,16 @@
+name: "App CI"
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  security:
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@main
+    with:
+      working_directory: "."
+      requirements_file: "requirements.txt"
+      python_version: "3.11"
+      fail_on_vuln: true
