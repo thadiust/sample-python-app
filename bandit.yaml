@@ -1,3 +1,0 @@
-# Keep CI-only Bandit fixtures out of the main repo scan (see fixtures/).
-exclude_dirs:
-  - fixtures

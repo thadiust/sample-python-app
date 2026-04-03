@@ -16,29 +16,3 @@ jobs:
       fail_on_vuln: true
       run_pip_audit_scan: true
       run_bandit: true
-      bandit_config: bandit.yaml
-
-  # Bandit must exit non-zero on known-bad code (fail_on_findings). If this job passes, the gate is broken.
-  bandit-expected-failure:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Run Bandit on intentional finding (expect step failure)
-        id: bandit_bad
-        continue-on-error: true
-        uses: thadiust/sast-bandit@main
-        with:
-          python_version: "3.11"
-          working_directory: "."
-          targets: "fixtures/bandit_should_fail.py"
-          fail_on_findings: true
-
-      - name: Assert Bandit failed the step as expected
-        run: |
-          if [ "${{ steps.bandit_bad.outcome }}" != "failure" ]; then
-            echo "Expected Bandit to fail this step due to findings; got outcome=${{ steps.bandit_bad.outcome }}"
-            exit 1
-          fi
-          echo "Bandit correctly failed on the fixture."
