@@ -14,3 +14,5 @@ jobs:
       requirements_file: "requirements.txt"
       python_version: "3.11"
       fail_on_vuln: true
+      run_pip_audit_scan: true
+      run_bandit: true
