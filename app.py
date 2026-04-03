@@ -9,5 +9,4 @@ def home():
 
 
 if __name__ == "__main__":
-    # Intentional Bandit finding (B201: Flask debug mode). Remove debug=True for a clean scan.
-    app.run(debug=True)
+    app.run()
