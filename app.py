@@ -9,5 +9,4 @@ def home():
 
 
 if __name__ == "__main__":
-    # Bandit fail demo (B201 flask_debug_true) — remove debug=True after CI fails as expected
-    app.run(debug=True)
+    app.run()
