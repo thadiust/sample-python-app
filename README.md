@@ -15,6 +15,14 @@ python app.py
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000) (Flask’s default port) or set `FLASK_APP=app` and use `flask run` if you prefer.
 
+### Editor / type checker (“could not be resolved”)
+
+**`typings/flask/`** ships a **minimal `.pyi` stub** so **Pyright/Basedpyright** can resolve `import flask` even when your selected interpreter is **plain system Python** (no Flask installed). **`reportMissingModuleSource`** is turned off so you do not get a warning for “stub only, no package source.” When **`.venv`** exists and contains Flask, the **real** package is still used for analysis.
+
+For **running** the app you still need **`pip install -r requirements.txt`** (usually inside **`.venv`**). **`pyrightconfig.json`** points Pyright at **`.venv`** when present. **Do not commit `.venv/`** — it stays gitignored.
+
+**Monorepo (parent folder is the Cursor/VS Code workspace root):** Pyright treats the **workspace root** as the project root. It does **not** apply a subfolder’s `stubPath` the same way, so **`import flask`** can break if the only config is here and your root is something like **`security-pipeline`**. Fix one of these: (1) keep a **`pyrightconfig.json` at the monorepo root** (with `stubPath` pointing at `sample-python-app/typings` — that file is for local layout only if you do not commit the monorepo), or (2) **open `sample-python-app` as the folder** (or add it as a workspace folder) so this file is the effective project root. Reload or **Basedpyright: Restart** after changes.
+
 ## CI
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
@@ -36,3 +44,5 @@ To change toggles, Python version, or Bandit severity, add or adjust `with:` inp
 |------|------|
 | `app.py` | Tiny Flask app with a single `/` route |
 | `requirements.txt` | Runtime dependencies (also what pip-audit reads) |
+| `pyrightconfig.json` | Pyright/Basedpyright: `.venv` when present + `reportMissingModuleSource` off |
+| `typings/flask/__init__.pyi` | Minimal stub so `import flask` resolves without a venv (types only) |
