@@ -49,8 +49,8 @@ Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workfl
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with explicit **`ruff_version`** (keep aligned with `requirements.txt`) and **`run_pytest: true`**. **`requirements.txt`** pins **`pytest==…`** to match workflow defaults.
 
 - **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
-- **Gitleaks** (full git history) after Ruff passes or is skipped
-- **Bandit** and **pip-audit** in parallel after Gitleaks **and** pytest (each waits on Ruff, Gitleaks, and pytest per `needs:` in the reusable workflow; pytest can be skipped with `run_pytest: false`)
+- **Gitleaks** (full git history) after **Ruff and pytest** pass or are skipped (`run_pytest: false` skips pytest so Gitleaks can still run)
+- **Bandit** and **pip-audit** in parallel after **Gitleaks** (each waits on Ruff, Gitleaks, and pytest)
 
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
 
