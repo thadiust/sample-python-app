@@ -1,0 +1,29 @@
+name: "App CI"
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  security:
+    # Bump @v… when you adopt a new workflow-python release (v1.0.1 aligns ci.yml with Ruff/pytest composites).
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.1
+    with:
+      working_directory: "."
+      requirements_file: "requirements.txt"
+      python_version: "3.11"
+      fail_on_vuln: true
+      run_ruff: true
+      ruff_version: "0.15.9"
+      run_pytest: true
+      run_gitleaks: true
+      run_pip_audit_scan: true
+      run_bandit: true

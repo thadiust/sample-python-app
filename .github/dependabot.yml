@@ -1,0 +1,15 @@
+# When this folder is the root of sample-python-app on GitHub.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # App deps (Flask, pytest, ruff, …) — complements pip-audit in CI; review PRs for advisories.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
