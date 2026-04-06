@@ -22,6 +22,7 @@ jobs:
       fail_on_vuln: true
       run_ruff: true
       ruff_version: "0.15.9"
+      run_pytest: true
       run_gitleaks: true
       run_pip_audit_scan: true
       run_bandit: true

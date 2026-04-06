@@ -46,7 +46,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with explicit **`ruff_version`** (keep aligned with `requirements.txt`). **Pytest** is driven by the reusable workflow **defaults** in **`workflow-python`**; **`requirements.txt`** still pins **`pytest==…`** to match those defaults.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with explicit **`ruff_version`** (keep aligned with `requirements.txt`) and **`run_pytest: true`**. **`requirements.txt`** pins **`pytest==…`** to match workflow defaults.
 
 - **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
 - **Gitleaks** (full git history) after Ruff passes or is skipped
@@ -55,6 +55,8 @@ Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workfl
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
 
 To change toggles, Python version, or Bandit severity, add or adjust `with:` inputs on that job; see the [workflow-python README](https://github.com/thadiust/workflow-python/blob/main/README.md).
+
+**Bandit:** The pipeline scans **the whole tree** by default, **including `tests/`**, so risky patterns in test code are visible too. **B101** on pytest **`assert`** lines is expected — add **`# nosec B101`** on those lines, or set **`bandit_exclude: tests`** in the workflow `with:` if you want Bandit to skip test directories. For anything else, read the job log (issue code, file, link) and fix or tune via **`bandit.yaml`** / **`bandit_minimum_severity`**.
 
 **Note:** Gitleaks scans **history**, not only the latest commit. If you ever commit something that looks like a secret, deleting the file in a later commit may **not** clear CI until you [rewrite history or use a baseline](https://github.com/thadiust/secrets-gitleaks/blob/main/README.md#removed-the-file-but-ci-still-fails).
 
