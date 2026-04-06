@@ -50,7 +50,7 @@ Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workfl
 
 - **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
 - **Gitleaks** (full git history) after Ruff passes or is skipped
-- **Bandit** and **pip-audit** in parallel after Gitleaks (each also waits on Ruff + Gitleaks per `needs:` in the reusable workflow)
+- **Bandit** and **pip-audit** in parallel after Gitleaks **and** pytest (each waits on Ruff, Gitleaks, and pytest per `needs:` in the reusable workflow; pytest can be skipped with `run_pytest: false`)
 
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
 
