@@ -1,0 +1,7 @@
+# When this folder is the root of sample-python-app on GitHub.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
