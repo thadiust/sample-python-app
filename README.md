@@ -17,7 +17,7 @@ Open [http://127.0.0.1:5000](http://127.0.0.1:5000) (Flask’s default port) or 
 
 ### Lint / format (Ruff)
 
-CI runs **Ruff** first (see **`workflow-python`**). If the **ruff-lint** job fails, open the job log: it prints a **diff** (for format issues) and **exact commands** to run locally with the same Ruff version as CI — you don’t need this README for that.
+CI runs **Ruff** first (see **`workflow-python`**). If **ruff-lint** fails, open the workflow run → failed **ruff-lint** job → **Summary** tab for short fix steps, or the **log** for the full **diff** and commands — you don’t need this README for that.
 
 Optional — match CI before you push:
 
