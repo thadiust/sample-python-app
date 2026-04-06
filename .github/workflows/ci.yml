@@ -14,8 +14,8 @@ on:
 
 jobs:
   security:
-    # After you tag workflow-python (e.g. v1.0.0), pin: .../ci.yml@v1.0.0 or @<full-sha> — see monorepo README "What to do next".
-    uses: thadiust/workflow-python/.github/workflows/ci.yml@main
+    # Pinned tag (bump when you release a new workflow-python version). Immutable SHA: 354b4003e32744be7cac4831da80c4c0f291848a
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.0
     with:
       working_directory: "."
       requirements_file: "requirements.txt"
