@@ -22,12 +22,15 @@ CI runs **Ruff** first (see **`workflow-python`**). If **ruff-lint** fails, open
 Optional — match CI before you push:
 
 ```bash
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ruff format --force-exclude .
 ruff check --fix --force-exclude .
 ruff check --force-exclude . && ruff format --check --force-exclude .
 ```
+
+**zsh:** Don’t put **`# comments` on the same line** as `ruff`/`python` commands when pasting — if `interactivecomments` is off, the shell can pass `#`, `apply`, etc. as extra arguments and Ruff will look for files with those names. Use comments on their own line or run commands one at a time.
 
 The **`ruff`** line in **`requirements.txt`** is pinned to match [workflow-python’s default `ruff_version`](https://github.com/thadiust/workflow-python/blob/main/README.md); bump both when you upgrade.
 
