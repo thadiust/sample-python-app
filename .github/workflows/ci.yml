@@ -14,8 +14,8 @@ on:
 
 jobs:
   security:
-    # Bump @v… when you intentionally adopt a new workflow-python release (or use @main for floating latest).
-    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.0
+    # Bump @v… when you adopt a new workflow-python release (v1.0.1 aligns ci.yml with Ruff/pytest composites).
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.1
     with:
       working_directory: "."
       requirements_file: "requirements.txt"
