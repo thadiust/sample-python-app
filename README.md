@@ -15,6 +15,22 @@ python app.py
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000) (Flask’s default port) or set `FLASK_APP=app` and use `flask run` if you prefer.
 
+### Lint / format (Ruff)
+
+CI runs **Ruff** first (see **`workflow-python`**). If the **ruff-lint** job fails, open the job log: it prints a **diff** (for format issues) and **exact commands** to run locally with the same Ruff version as CI — you don’t need this README for that.
+
+Optional — match CI before you push:
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+ruff format --force-exclude .
+ruff check --fix --force-exclude .
+ruff check --force-exclude . && ruff format --check --force-exclude .
+```
+
+The **`ruff`** line in **`requirements.txt`** is pinned to match [workflow-python’s default `ruff_version`](https://github.com/thadiust/workflow-python/blob/main/README.md); bump both when you upgrade.
+
 ### Editor / type checker (“could not be resolved”)
 
 **`typings/flask/`** ships a **minimal `.pyi` stub** so **Pyright/Basedpyright** can resolve `import flask` even when your selected interpreter is **plain system Python** (no Flask installed). **`reportMissingModuleSource`** is turned off so you do not get a warning for “stub only, no package source.” When **`.venv`** exists and contains Flask, the **real** package is still used for analysis.
@@ -29,10 +45,11 @@ Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workfl
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with:
 
+- **Ruff** (lint + format check) first
 - **Gitleaks** (full git history)
-- **Bandit** and **pip-audit** in parallel after Gitleaks
+- **Bandit** and **pip-audit** in parallel after Gitleaks (and after Ruff, when Ruff is enabled)
 
-**Expected behavior:** the workflow run **fails** if any **enabled** scan reports a problem (**secrets**, **Bandit issues**, or **dependency vulnerabilities**, according to each job’s settings). It **passes** only when **all enabled jobs** succeed.
+**Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
 
 To change toggles, Python version, or Bandit severity, add or adjust `with:` inputs on that job; see the [workflow-python README](https://github.com/thadiust/workflow-python/blob/main/README.md).
 
@@ -43,6 +60,6 @@ To change toggles, Python version, or Bandit severity, add or adjust `with:` inp
 | Path | Role |
 |------|------|
 | `app.py` | Tiny Flask app with a single `/` route |
-| `requirements.txt` | Runtime dependencies (also what pip-audit reads) |
+| `requirements.txt` | Runtime deps + **ruff** (test-repo convenience; pin matches CI) |
 | `pyrightconfig.json` | Pyright/Basedpyright: `.venv` when present + `reportMissingModuleSource` off |
 | `typings/flask/__init__.pyi` | Minimal stub so `import flask` resolves without a venv (types only) |
