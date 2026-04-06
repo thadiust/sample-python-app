@@ -2,7 +2,7 @@
 
 This repository exists to **validate and demonstrate** the reusable Python security pipeline **end-to-end** (not to ship production features).
 
-Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it shows how a small Python repo wires **Gitleaks** (secrets), **Bandit** (SAST issues), and **pip-audit** (dependency vulnerabilities) through one reusable workflow.
+Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **Ruff**, **pytest**, **Gitleaks**, **Bandit**, and **pip-audit** through one callable workflow.
 
 ## Run locally
 
@@ -46,11 +46,11 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with:
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with explicit **`ruff_version`** (keep aligned with `requirements.txt`). **Pytest** is driven by the reusable workflow **defaults** in **`workflow-python`**; **`requirements.txt`** still pins **`pytest==…`** to match those defaults.
 
-- **Ruff** (lint + format check) first
-- **Gitleaks** (full git history)
-- **Bandit** and **pip-audit** in parallel after Gitleaks (and after Ruff, when Ruff is enabled)
+- **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
+- **Gitleaks** (full git history) after Ruff passes or is skipped
+- **Bandit** and **pip-audit** in parallel after Gitleaks (each also waits on Ruff + Gitleaks per `needs:` in the reusable workflow)
 
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
 
@@ -63,6 +63,7 @@ To change toggles, Python version, or Bandit severity, add or adjust `with:` inp
 | Path | Role |
 |------|------|
 | `app.py` | Tiny Flask app with a single `/` route |
-| `requirements.txt` | Runtime deps + **ruff** (test-repo convenience; pin matches CI) |
+| `requirements.txt` | Runtime deps + **ruff** / **pytest** (pins match CI defaults) |
+| `tests/test_app.py` | Minimal pytest for `/` |
 | `pyrightconfig.json` | Pyright/Basedpyright: `.venv` when present + `reportMissingModuleSource` off |
 | `typings/flask/__init__.pyi` | Minimal stub so `import flask` resolves without a venv (types only) |

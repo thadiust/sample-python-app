@@ -20,6 +20,8 @@ jobs:
       requirements_file: "requirements.txt"
       python_version: "3.11"
       fail_on_vuln: true
+      run_ruff: true
+      ruff_version: "0.15.9"
       run_gitleaks: true
       run_pip_audit_scan: true
       run_bandit: true
