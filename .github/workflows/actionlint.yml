@@ -22,4 +22,4 @@ jobs:
           sudo install -m755 /tmp/actionlint /usr/local/bin/actionlint
 
       - name: Lint workflow YAML
-        run: actionlint -color .github/workflows/
+        run: actionlint -color
