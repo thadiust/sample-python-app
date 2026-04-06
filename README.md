@@ -46,7 +46,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@v1.0.3`** (bump the tag when you adopt a new release, or use **`@main`** for floating latest) with explicit **`ruff_version`** and **`pytest_version: "9.0.2"`** (keep both aligned with `requirements.txt`) and **`run_pytest: true`**. **`requirements.txt`** pins **`pytest==9.0.2`** so local installs match CI.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@v1.0.4`** (bump the tag when you adopt a new release, or use **`@main`** for floating latest) with **`permissions: security-events: write`** so **Gitleaks** / **Bandit** SARIF can upload to **Code Scanning**. It sets explicit **`ruff_version`**, **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**. **`requirements.txt`** pins **`pytest==9.0.2`** so local installs match CI.
 
 - **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
 - **Gitleaks** (full git history) after **Ruff and pytest** pass or are skipped (`run_pytest: false` skips pytest so Gitleaks can still run)
