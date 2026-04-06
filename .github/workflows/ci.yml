@@ -14,6 +14,7 @@ on:
 
 jobs:
   security:
+    # After you tag workflow-python (e.g. v1.0.0), pin: .../ci.yml@v1.0.0 or @<full-sha> — see monorepo README "What to do next".
     uses: thadiust/workflow-python/.github/workflows/ci.yml@main
     with:
       working_directory: "."
