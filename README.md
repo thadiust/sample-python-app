@@ -46,7 +46,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** with explicit **`ruff_version`** (keep aligned with `requirements.txt`) and **`run_pytest: true`**. **`requirements.txt`** pins **`pytest==…`** to match workflow defaults.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@v1.0.0`** (bump the tag or switch to **`@main`** per your policy) with explicit **`ruff_version`** (keep aligned with `requirements.txt`) and **`run_pytest: true`**. **`requirements.txt`** pins **`pytest==…`** to match workflow defaults.
 
 - **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
 - **Gitleaks** (full git history) after **Ruff and pytest** pass or are skipped (`run_pytest: false` skips pytest so Gitleaks can still run)

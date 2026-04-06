@@ -14,7 +14,7 @@ on:
 
 jobs:
   security:
-    # Pinned tag (bump when you release a new workflow-python version). Immutable SHA: 354b4003e32744be7cac4831da80c4c0f291848a
+    # Bump @v… when you intentionally adopt a new workflow-python release (or use @main for floating latest).
     uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.0
     with:
       working_directory: "."
