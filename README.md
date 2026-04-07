@@ -9,7 +9,7 @@ Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](ht
 ```bash
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements.txt   # lockfile: regenerate from requirements.in when you change deps (see below)
 python app.py
 ```
 
@@ -46,7 +46,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@v1.0.4`** (bump the tag when you adopt a new release, or use **`@main`** for floating latest) with **`permissions: security-events: write`** so **Gitleaks** / **Bandit** SARIF can upload to **Code Scanning**. It sets explicit **`ruff_version`**, **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**. **`requirements.txt`** pins **`pytest==9.0.2`** so local installs match CI.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@v1.0.5`** (bump the tag when you adopt a new release, or use **`@main`** for floating latest) with **`permissions: security-events: write`** so **Gitleaks** / **Bandit** SARIF can upload to **Code Scanning**. It sets **`enforce_pip_tools_lockfile: true`** so the committed **`requirements.txt`** must match **`pip-compile`** output from **`requirements.in`** (same install graph for **pytest** and **pip-audit**). It sets explicit **`ruff_version`**, **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**.
 
 - **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
 - **Gitleaks** (full git history) after **Ruff and pytest** pass or are skipped (`run_pytest: false` skips pytest so Gitleaks can still run)
@@ -60,12 +60,28 @@ To change toggles, Python version, or Bandit severity, add or adjust `with:` inp
 
 **Note:** Gitleaks scans **history**, not only the latest commit. If you ever commit something that looks like a secret, deleting the file in a later commit may **not** clear CI until you [rewrite history or use a baseline](https://github.com/thadiust/secrets-gitleaks/blob/main/README.md#removed-the-file-but-ci-still-fails).
 
+## Dependencies (`requirements.in` → `requirements.txt`)
+
+**`requirements.in`** lists **direct** dependencies (you may use compatible ranges). **`requirements.txt`** is the **pip-compile lock** (fully pinned, including transitives). **pip-audit** scans that lock so SCA matches what **`pip install -r requirements.txt`** resolves.
+
+Regenerate the lock after editing **`.in`** (use the same Python major/minor as CI, **3.11**, for fewer surprises):
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install 'pip-tools>=7.4,<8'
+pip-compile requirements.in -o requirements.txt --strip-extras
+```
+
+Commit **both** files. If you change **`.in`** but not the lock, CI fails on **`enforce_pip_tools_lockfile`**.
+
 ## Contents
 
 | Path | Role |
 |------|------|
 | `app.py` | Tiny Flask app with a single `/` route |
-| `requirements.txt` | Runtime deps + **ruff** / **pytest** (pins match CI defaults) |
+| `requirements.in` | Direct deps (input to **pip-compile**) |
+| `requirements.txt` | Pinned lock (**pytest**, **pip-audit**, local **`pip install`**) |
 | `tests/test_app.py` | Minimal pytest for `/` |
 | `pyrightconfig.json` | Pyright/Basedpyright: `.venv` when present + `reportMissingModuleSource` off |
 | `typings/flask/__init__.pyi` | Minimal stub so `import flask` resolves without a venv (types only) |

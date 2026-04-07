@@ -16,10 +16,12 @@ on:
 jobs:
   security:
     # Bump @v… when you adopt a new workflow-python release (nested thadiust/* pins live in that repo's ci.yml).
-    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.4
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.5
     with:
       working_directory: "."
       requirements_file: "requirements.txt"
+      enforce_pip_tools_lockfile: true
+      pip_tools_requirements_in: "requirements.in"
       python_version: "3.11"
       fail_on_vuln: true
       run_ruff: true
