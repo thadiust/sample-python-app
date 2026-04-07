@@ -1,0 +1,9 @@
+# High-level dependencies (ranges allowed). Generate the lock with:
+#   pip-compile requirements.in -o requirements.txt --strip-extras
+# pip-audit and pytest install from requirements.txt (fully pinned = stable SCA graph).
+
+flask>=3.1,<4
+
+# Dev / CI — keep in sync with workflow inputs (ruff_version, pytest_version).
+ruff==0.15.9
+pytest==9.0.2
