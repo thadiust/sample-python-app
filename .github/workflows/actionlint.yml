@@ -10,4 +10,4 @@ permissions:
 
 jobs:
   actionlint:
-    uses: thadiust/workflow-python/.github/workflows/reusable-actionlint.yml@v1.0.7
+    uses: thadiust/workflow-python/.github/workflows/reusable-actionlint.yml@v1.0.8

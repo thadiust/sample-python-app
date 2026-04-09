@@ -4,6 +4,10 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 
 ## [Unreleased]
 
+## 2026-04-09 — workflow-python v1.0.8
+
+- Bumped **`workflow-python`** to **`@v1.0.8`** (**`ci.yml`**, **`reusable-actionlint`**, **`dependency-review`**): actionlint tarball **SHA256** verification, pinned **PyYAML**, reusable **dependency-review**, nested action pins (**Gitleaks** / **Bandit** / **pip-audit**).
+
 ## 2026-04-06 — pip-tools lockfile
 
 - **`requirements.in`** and **pip-compile**-locked **`requirements.txt`** (same graph for **`pip install`**, **pytest**, and **pip-audit**).
