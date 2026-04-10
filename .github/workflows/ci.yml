@@ -15,7 +15,7 @@ on:
 
 jobs:
   security:
-    # Solo dev: @main tracks workflow-python main (instant updates). Before onboarding others, switch to @vX.Y.Z.
+    # All thadiust/workflow-python refs use @main (floating). Pin @v… only when you need reproducible CI.
     uses: thadiust/workflow-python/.github/workflows/ci.yml@main
     with:
       working_directory: "."

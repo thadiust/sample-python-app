@@ -4,7 +4,7 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 
 ## [Unreleased]
 
-- **`workflow-python`** callable workflows use **`@main`** (**`ci.yml`**, **`reusable-actionlint`**, **`dependency-review`**) for solo development — flip back to **`@vX.Y.Z`** before onboarding others or when you need pinned, reproducible CI.
+- **`workflow-python`** callable workflows use **`@main`** only (**`ci.yml`**, **`reusable-actionlint`**, **`dependency-review`**). Pin **`@v…`** later if you need frozen, reproducible CI.
 
 ## 2026-04-09 — workflow-python v1.0.8
 
