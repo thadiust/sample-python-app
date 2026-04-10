@@ -15,8 +15,8 @@ on:
 
 jobs:
   security:
-    # Bump @v… when you adopt a new workflow-python release (nested thadiust/* pins live in that repo's ci.yml).
-    uses: thadiust/workflow-python/.github/workflows/ci.yml@v1.0.8
+    # Solo dev: @main tracks workflow-python main (instant updates). Before onboarding others, switch to @vX.Y.Z.
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@main
     with:
       working_directory: "."
       requirements_file: "requirements.txt"

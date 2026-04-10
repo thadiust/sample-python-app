@@ -8,4 +8,4 @@ permissions:
 
 jobs:
   dependency-review:
-    uses: thadiust/workflow-python/.github/workflows/dependency-review.yml@v1.0.8
+    uses: thadiust/workflow-python/.github/workflows/dependency-review.yml@main
