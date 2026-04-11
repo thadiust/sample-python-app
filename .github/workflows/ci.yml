@@ -15,8 +15,8 @@ on:
 
 jobs:
   security:
-    # All thadiust/workflow-python refs use @main (floating). Pin @v… only when you need reproducible CI.
-    uses: thadiust/workflow-python/.github/workflows/ci.yml@main
+    # Pinned workflow SHA keeps CI and the Actions language server aligned; switch to @main when you want floating updates.
+    uses: thadiust/workflow-python/.github/workflows/ci.yml@a6423a3241109f1808378a6df5deedefe8d2119c
     with:
       working_directory: "."
       requirements_file: "requirements.txt"
