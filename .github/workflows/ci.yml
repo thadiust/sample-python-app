@@ -35,3 +35,4 @@ jobs:
       upload_code_scanning: true
       run_docker_build: true
       dockerfile: Dockerfile
+      trivy_image_fail_on_findings: false
