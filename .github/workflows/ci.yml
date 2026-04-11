@@ -35,4 +35,6 @@ jobs:
       upload_code_scanning: true
       run_docker_build: true
       dockerfile: Dockerfile
+      # Sample app: base images (e.g. python:slim) carry distro CVEs; we still upload trivy-image SARIF.
+      # Production services should omit this (default true) or use minimal/distroless images + patching.
       trivy_image_fail_on_findings: false
