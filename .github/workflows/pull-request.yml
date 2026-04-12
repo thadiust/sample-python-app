@@ -1,19 +1,22 @@
-name: "App CI"
+# PRs: Dependency Review ∥ full security pipeline — same `with:` as push `ci.yml` (parity).
+name: Pull request checks
+
+on:
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
+  pull-requests: read
   security-events: write
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+concurrency:
+  group: pr-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  security:
-    # All thadiust/workflow-python refs use @main (floating). Pin @v… only when you need reproducible CI.
-    uses: thadiust/workflow-python/.github/workflows/ci.yml@main
+  suite:
+    uses: thadiust/workflow-python/.github/workflows/python-pr-suite.yml@main
     with:
       working_directory: "."
       requirements_file: "requirements.txt"
@@ -29,6 +32,4 @@ jobs:
       upload_code_scanning: true
       run_docker_build: true
       dockerfile: Dockerfile
-      # Sample app: base images (e.g. python:slim) carry distro CVEs; we still upload trivy-image SARIF.
-      # Production services should omit this (default true) or use minimal/distroless images + patching.
       trivy_image_fail_on_findings: false

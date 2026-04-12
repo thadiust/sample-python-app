@@ -4,6 +4,6 @@
 
 flask>=3.1,<4
 
-# Dev / CI — keep in sync with workflow inputs (ruff_version, pytest_version).
+# Dev / CI — keep Ruff pin in sync with .pre-commit-config.yaml (ruff-pre-commit); pytest with workflow-python ci.yml defaults.
 ruff==0.15.9
 pytest==9.0.2
