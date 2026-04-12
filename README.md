@@ -4,6 +4,10 @@ This repository exists to **validate and demonstrate** the reusable Python secur
 
 Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **Ruff**, **pytest**, **Gitleaks**, **Bandit**, and **pip-audit** through one callable workflow.
 
+## Dockerfile (demo only — copy-paste hazard)
+
+The **[`Dockerfile`](Dockerfile)** is for **trying optional `docker-build` / Trivy image** flows in CI, **not** a production hardening template. It runs **`pip install`** as **root** before switching **`USER`** — fine for a sample; **do not** treat it as an org default without **multi-stage** builds, non-root install, and your own base-image policy.
+
 ## Run locally
 
 ```bash

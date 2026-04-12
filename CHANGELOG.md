@@ -4,6 +4,7 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 
 ## [Unreleased]
 
+- **README:** **Dockerfile (demo only)** warning — root **`pip install`** before **`USER`**; not a production template.
 - **`workflow-python`** callable workflows use **`@main`** only (**`ci.yml`**, **`reusable-actionlint`**, **`dependency-review`**). Pin **`@v…`** later if you need frozen, reproducible CI.
 
 ## 2026-04-09 — workflow-python v1.0.8
