@@ -42,7 +42,7 @@ ruff check --force-exclude . && ruff format --check --force-exclude .
 
 **zsh:** Don’t put **`# comments` on the same line** as `ruff`/`python` commands when pasting — if `interactivecomments` is off, the shell can pass `#`, `apply`, etc. as extra arguments and Ruff will look for files with those names. Use comments on their own line or run commands one at a time.
 
-The **`ruff`** line in **`requirements.txt`** is pinned to match [workflow-python’s default `ruff_version`](https://github.com/thadiust/workflow-python/blob/main/README.md); bump both when you upgrade.
+The **`ruff`** line in **`requirements.txt`** is for local **`ruff`** CLI use; keep it aligned with the **`astral-sh/ruff-pre-commit`** **`rev:`** in **[`.pre-commit-config.yaml`](.pre-commit-config.yaml)** when you upgrade Ruff.
 
 ### Editor / type checker (“could not be resolved”)
 
