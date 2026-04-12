@@ -27,7 +27,6 @@ jobs:
       run_pytest: true
       pytest_requirements_file: "requirements.txt"
       pytest_version: "9.0.2"
-      run_gitleaks: true
       run_pip_audit_scan: true
       run_bandit: true
       upload_code_scanning: true
