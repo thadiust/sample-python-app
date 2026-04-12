@@ -7,7 +7,7 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 - **README:** **CI** section matches **`workflow-python`** DAG (**Ruff ∥ Gitleaks** → **pytest** → scanners).
 - **Dockerfile:** **DEMO ONLY** banner lines (copy-paste hazard) at top of file.
 - **README:** **Dockerfile (demo only)** warning — root **`pip install`** before **`USER`**; not a production template.
-- **PRs:** [`.github/workflows/pull-request.yml`](.github/workflows/pull-request.yml) uses **`workflow-python`** **`python-pr-suite.yml@main`** (Dependency Review ∥ **`ci.yml`**). **Push / dispatch:** still [**`ci.yml`**](.github/workflows/ci.yml) → **`ci.yml@main`** directly. Removed standalone **`dependency-review.yml`**. All **`workflow-python`** refs remain **`@main`** unless you pin **`@v…`**.
+- **PRs:** [`.github/workflows/pull-request.yml`](.github/workflows/pull-request.yml) uses **`python-pr-suite.yml@main`** with the **same `with:`** as push [**`ci.yml`**](.github/workflows/ci.yml) (explicit parity). **Push / dispatch:** [**`ci.yml`**](.github/workflows/ci.yml) → **`ci.yml@main`**. Removed standalone **`dependency-review.yml`**. **`workflow-python`** refs **`@main`** unless you pin **`@v…`**.
 
 ## 2026-04-09 — workflow-python v1.0.8
 

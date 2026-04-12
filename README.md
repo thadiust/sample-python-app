@@ -48,7 +48,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 ## CI
 
-- **Pull requests:** [`.github/workflows/pull-request.yml`](.github/workflows/pull-request.yml) calls **`thadiust/workflow-python/.github/workflows/python-pr-suite.yml@main`** — **Dependency Review** and the full **`ci.yml`** graph run **in parallel** (see [workflow-python **python-pr-suite**](https://github.com/thadiust/workflow-python/blob/main/.github/workflows/python-pr-suite.yml)). Non-default inputs (**`enforce_pip_tools_lockfile`**, **Docker** build, **`trivy_image_fail_on_findings: false`**) are passed via **`with:`**; everything else uses **`ci.yml`** defaults (**`ruff_version`**, **`pytest_version`**, etc.).
+- **Pull requests:** [`.github/workflows/pull-request.yml`](.github/workflows/pull-request.yml) calls **`python-pr-suite.yml@main`** with the **same explicit `with:`** as push [**`ci.yml`**](.github/workflows/ci.yml) (PR/push **parity** on tool versions, lockfile, scanners, Docker, SARIF, image gate).
 - **Push to `main` / `workflow_dispatch`:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`ci.yml@main`** directly (no Dependency Review on push — same **`with:`** as before for lockfile, scanners, Docker, and image gate).
 
 **Permissions:** PR workflow sets **`contents: read`**, **`pull-requests: read`**, **`security-events: write`**. Push workflow sets **`security-events: write`** for SARIF. **`workflow-python`** applies **`concurrency`** on reusable runs where configured.
