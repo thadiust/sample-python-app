@@ -52,11 +52,9 @@ Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workfl
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** (same for **actionlint** and **dependency-review** workflows — all **`@main`**). It sets **`permissions: security-events: write`** so **Gitleaks** / **Bandit** / **Trivy** SARIF can upload to **Code Scanning**. It sets **`enforce_pip_tools_lockfile: true`** so the committed **`requirements.txt`** must match **`pip-compile`** output from **`requirements.in`** (same install graph for **pytest** and **pip-audit**). It sets **`pytest_requirements_file: "requirements.txt"`** explicitly (same value as **`requirements_file`**, documented in YAML). It sets explicit **`ruff_version`**, **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**.
 
-- **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
-- **Gitleaks** (full git history) after **Ruff and pytest** pass or are skipped (`run_pytest: false` skips pytest so Gitleaks can still run)
-- **Bandit** and **pip-audit** in parallel after **Gitleaks** (each waits on Ruff, Gitleaks, and pytest)
+**Authoritative DAG** (matches **`workflow-python`** `ci.yml`): **Ruff ∥ Gitleaks** (parallel) → **pytest** → **Trivy repo ∥ Bandit ∥ pip-audit** (parallel trio). **Gitleaks** does **not** wait on **pytest**; it runs in the **first** wave with **Ruff** so secrets are caught before slow installs.
 
-**Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
+**Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **tests**, **Trivy**, **Bandit**, **pip-audit**, per settings). It **passes** only when **all enabled jobs** succeed.
 
 To change toggles, Python version, or Bandit severity, add or adjust `with:` inputs on that job; see the [workflow-python README](https://github.com/thadiust/workflow-python/blob/main/README.md).
 

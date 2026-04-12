@@ -4,6 +4,8 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 
 ## [Unreleased]
 
+- **README:** **CI** section matches **`workflow-python`** DAG (**Ruff ∥ Gitleaks** → **pytest** → scanners).
+- **Dockerfile:** **DEMO ONLY** banner lines (copy-paste hazard) at top of file.
 - **README:** **Dockerfile (demo only)** warning — root **`pip install`** before **`USER`**; not a production template.
 - **`workflow-python`** callable workflows use **`@main`** only (**`ci.yml`**, **`reusable-actionlint`**, **`dependency-review`**). Pin **`@v…`** later if you need frozen, reproducible CI.
 
