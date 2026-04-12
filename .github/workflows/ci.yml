@@ -21,8 +21,6 @@ jobs:
       pip_tools_requirements_in: "requirements.in"
       python_version: "3.11"
       fail_on_vuln: true
-      run_ruff: true
-      ruff_version: "0.15.9"
       run_pytest: true
       pytest_requirements_file: "requirements.txt"
       pytest_version: "9.0.2"

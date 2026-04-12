@@ -2,7 +2,7 @@
 
 This repository exists to **validate and demonstrate** the reusable Python security pipeline **end-to-end** (not to ship production features).
 
-Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **Ruff**, **pytest**, **Gitleaks**, **Bandit**, and **pip-audit** through one callable workflow.
+Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **pre-commit** (hooks include **Ruff** + **Gitleaks** on the tree), **full-history Gitleaks**, **pytest**, **Bandit**, **pip-audit**, and optional **Docker**/**Trivy** through one callable workflow.
 
 ## Dockerfile (demo only — copy-paste hazard)
 
@@ -19,11 +19,17 @@ python app.py
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000) (Flask’s default port) or set `FLASK_APP=app` and use `flask run` if you prefer.
 
-### Lint / format (Ruff)
+### Lint / format (pre-commit)
 
-CI runs **Ruff** first (see **`workflow-python`**). If **ruff-lint** fails, open the workflow run → failed **ruff-lint** job → **Summary** tab for short fix steps, or the **log** for the full **diff** and commands — you don’t need this README for that.
+CI runs **`pre-commit run --all-files`** first (**`pre-commit-check`** job; see **[`.pre-commit-config.yaml`](.pre-commit-config.yaml)**). Install hooks locally, then run the same command before every push:
 
-Optional — match CI before you push:
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+If **pre-commit-check** fails, open the workflow log for the failing hook. You can still run **Ruff** directly when debugging:
 
 ```bash
 python -m venv .venv
