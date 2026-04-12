@@ -2,7 +2,7 @@
 
 This repository exists to **validate and demonstrate** the reusable Python security pipeline **end-to-end** (not to ship production features).
 
-Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **`pre-commit-check`** (hooks include **Gitleaks**, **Black**, **Ruff**, etc. — **no** duplicate Gitleaks job in **`ci.yml`**), then **pytest**, **Bandit**, **pip-audit**, and optional **Docker**/**Trivy** through one callable workflow.
+Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **`pre-commit-check` ∥ `gitleaks-scan`** (hook + full-history **`secrets-gitleaks`**; **`run_gitleaks: false`** turns off only the job), then **pytest**, **Bandit**, **pip-audit**, and optional **Docker**/**Trivy** through one callable workflow.
 
 ## Dockerfile (demo only — copy-paste hazard)
 
@@ -61,7 +61,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 **Lockfile:** **`enforce_pip_tools_lockfile: true`** so **`requirements.txt`** matches **`pip-compile`** from **`requirements.in`**. **`pytest_requirements_file`** matches **`requirements_file`** via **`ci.yml`** defaults.
 
-**Authoritative DAG** (matches **`workflow-python`** `ci.yml`): **pre-commit-check** (includes **Gitleaks** hook) → **pytest** → **Trivy repo ∥ Bandit ∥ pip-audit** (parallel trio).
+**Authoritative DAG** (matches **`workflow-python`** `ci.yml`): **pre-commit-check ∥ gitleaks-scan** (when **`run_gitleaks`**) → **pytest** → **Trivy repo ∥ Bandit ∥ pip-audit** (parallel trio).
 
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **tests**, **Trivy**, **Bandit**, **pip-audit**, per settings). It **passes** only when **all enabled jobs** succeed.
 

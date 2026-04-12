@@ -4,7 +4,7 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 
 ## [Unreleased]
 
-- **README:** **CI** DAG matches **`workflow-python`** (**pre-commit-check** only for Gitleaks — no **`gitleaks-scan`** job).
+- **README:** **CI** DAG matches **`workflow-python`** (**pre-commit-check ∥ gitleaks-scan**; **`run_gitleaks`** via **`python-pr-suite`** defaults).
 - **`.pre-commit-config.yaml`:** **`fail_fast: true`**, **Gitleaks** first, **`ruff`** **`args: [--fix]`** (aligns with **`workflow-python`** template).
 - **Dockerfile:** **DEMO ONLY** banner lines (copy-paste hazard) at top of file.
 - **README:** **Dockerfile (demo only)** warning — root **`pip install`** before **`USER`**; not a production template.
