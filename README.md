@@ -48,9 +48,12 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 ## CI
 
-Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
+- **Pull requests:** [`.github/workflows/pull-request.yml`](.github/workflows/pull-request.yml) calls **`thadiust/workflow-python/.github/workflows/python-pr-suite.yml@main`** — **Dependency Review** and the full **`ci.yml`** graph run **in parallel** (see [workflow-python **python-pr-suite**](https://github.com/thadiust/workflow-python/blob/main/.github/workflows/python-pr-suite.yml)). Non-default inputs (**`enforce_pip_tools_lockfile`**, **Docker** build, **`trivy_image_fail_on_findings: false`**) are passed via **`with:`**; everything else uses **`ci.yml`** defaults (**`ruff_version`**, **`pytest_version`**, etc.).
+- **Push to `main` / `workflow_dispatch`:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`ci.yml@main`** directly (no Dependency Review on push — same **`with:`** as before for lockfile, scanners, Docker, and image gate).
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** (same for **actionlint** and **dependency-review** workflows — all **`@main`**). It sets **`permissions: security-events: write`** so **Gitleaks** / **Bandit** / **Trivy** SARIF can upload to **Code Scanning**. It sets **`enforce_pip_tools_lockfile: true`** so the committed **`requirements.txt`** must match **`pip-compile`** output from **`requirements.in`** (same install graph for **pytest** and **pip-audit**). It sets **`pytest_requirements_file: "requirements.txt"`** explicitly (same value as **`requirements_file`**, documented in YAML). It sets explicit **`ruff_version`**, **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**.
+**Permissions:** PR workflow sets **`contents: read`**, **`pull-requests: read`**, **`security-events: write`**. Push workflow sets **`security-events: write`** for SARIF. **`workflow-python`** applies **`concurrency`** on reusable runs where configured.
+
+**Lockfile:** **`enforce_pip_tools_lockfile: true`** so **`requirements.txt`** matches **`pip-compile`** from **`requirements.in`**. **`pytest_requirements_file`** matches **`requirements_file`** via **`ci.yml`** defaults.
 
 **Authoritative DAG** (matches **`workflow-python`** `ci.yml`): **Ruff ∥ Gitleaks** (parallel) → **pytest** → **Trivy repo ∥ Bandit ∥ pip-audit** (parallel trio). **Gitleaks** does **not** wait on **pytest**; it runs in the **first** wave with **Ruff** so secrets are caught before slow installs.
 

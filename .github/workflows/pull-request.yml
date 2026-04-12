@@ -1,0 +1,25 @@
+# PRs: Dependency Review ∥ full security pipeline (same pattern as workflow-python python-pr-suite).
+name: Pull request checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+
+concurrency:
+  group: pr-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suite:
+    uses: thadiust/workflow-python/.github/workflows/python-pr-suite.yml@main
+    with:
+      enforce_pip_tools_lockfile: true
+      pip_tools_requirements_in: "requirements.in"
+      run_docker_build: true
+      dockerfile: Dockerfile
+      trivy_image_fail_on_findings: false
