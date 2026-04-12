@@ -4,7 +4,8 @@ Notable changes to this **sample / reference app** are listed here (this repo do
 
 ## [Unreleased]
 
-- **README:** **CI** section matches **`workflow-python`** DAG (**Ruff ∥ Gitleaks** → **pytest** → scanners).
+- **README:** **CI** DAG matches **`workflow-python`** (**pre-commit** → **Gitleaks** job → **pytest** → scanners).
+- **`.pre-commit-config.yaml`:** **`fail_fast: true`**, **Gitleaks** first, **`ruff`** **`args: [--fix]`** (aligns with **`workflow-python`** template).
 - **Dockerfile:** **DEMO ONLY** banner lines (copy-paste hazard) at top of file.
 - **README:** **Dockerfile (demo only)** warning — root **`pip install`** before **`USER`**; not a production template.
 - **PRs:** [`.github/workflows/pull-request.yml`](.github/workflows/pull-request.yml) uses **`python-pr-suite.yml@main`** with the **same `with:`** as push [**`ci.yml`**](.github/workflows/ci.yml) (explicit parity). **Push / dispatch:** [**`ci.yml`**](.github/workflows/ci.yml) → **`ci.yml@main`**. Removed standalone **`dependency-review.yml`**. **`workflow-python`** refs **`@main`** unless you pin **`@v…`**.

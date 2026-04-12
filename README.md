@@ -2,7 +2,7 @@
 
 This repository exists to **validate and demonstrate** the reusable Python security pipeline **end-to-end** (not to ship production features).
 
-Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **pre-commit** (hooks include **Ruff** + **Gitleaks** on the tree), **full-history Gitleaks**, **pytest**, **Bandit**, **pip-audit**, and optional **Docker**/**Trivy** through one callable workflow.
+Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **pre-commit** (hooks include **Gitleaks**, **Black**, **Ruff**, etc.), then **full-history Gitleaks** in CI, **pytest**, **Bandit**, **pip-audit**, and optional **Docker**/**Trivy** through one callable workflow.
 
 ## Dockerfile (demo only — copy-paste hazard)
 
@@ -61,7 +61,7 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 **Lockfile:** **`enforce_pip_tools_lockfile: true`** so **`requirements.txt`** matches **`pip-compile`** from **`requirements.in`**. **`pytest_requirements_file`** matches **`requirements_file`** via **`ci.yml`** defaults.
 
-**Authoritative DAG** (matches **`workflow-python`** `ci.yml`): **Ruff ∥ Gitleaks** (parallel) → **pytest** → **Trivy repo ∥ Bandit ∥ pip-audit** (parallel trio). **Gitleaks** does **not** wait on **pytest**; it runs in the **first** wave with **Ruff** so secrets are caught before slow installs.
+**Authoritative DAG** (matches **`workflow-python`** `ci.yml`): **pre-commit** → **Gitleaks** job → **pytest** → **Trivy repo ∥ Bandit ∥ pip-audit** (parallel trio). The **Gitleaks** hook runs inside **pre-commit**; the **Gitleaks** job scans **history** after pre-commit when both are enabled.
 
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **tests**, **Trivy**, **Bandit**, **pip-audit**, per settings). It **passes** only when **all enabled jobs** succeed.
 
