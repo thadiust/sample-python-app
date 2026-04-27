@@ -5,5 +5,5 @@
 flask>=3.1,<4
 
 # Dev / CI — keep in sync with workflow inputs (ruff_version, pytest_version).
-ruff==0.15.9
+ruff==0.15.12
 pytest==9.0.2
