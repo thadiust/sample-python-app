@@ -26,7 +26,7 @@ jobs:
       fail_on_vuln: true
       run_pytest: true
       pytest_requirements_file: "requirements.txt"
-      pytest_version: "9.0.2"
+      pytest_version: "9.0.3"
       run_gitleaks: true
       run_pip_audit_scan: true
       run_bandit: true
