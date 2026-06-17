@@ -2,7 +2,7 @@
 
 This repository exists to **validate and demonstrate** the reusable Python security pipeline **end-to-end** (not to ship production features).
 
-Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **composite actions → reusable workflow → app repo** by running **Ruff**, **pytest**, **Gitleaks**, **Bandit**, and **pip-audit** through one callable workflow.
+Minimal **Flask** app used as a **reference consumer** of [`workflow-python`](https://github.com/thadiust/workflow-python): it exercises **pre-commit** (Black, Ruff, Gitleaks hook), **pytest**, **Gitleaks**, **Bandit**, **pip-audit**, **Trivy**, and **Docker** through one callable workflow.
 
 ## Run locally
 
@@ -15,24 +15,31 @@ python app.py
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000) (Flask’s default port) or set `FLASK_APP=app` and use `flask run` if you prefer.
 
-### Lint / format (Ruff)
+### Lint / format (pre-commit)
 
-CI runs **Ruff** first (see **`workflow-python`**). If **ruff-lint** fails, open the workflow run → failed **ruff-lint** job → **Summary** tab for short fix steps, or the **log** for the full **diff** and commands — you don’t need this README for that.
+CI runs **pre-commit** first (**Black** formats, **Ruff** lints, plus hooks and the **Gitleaks** hook). Install hooks locally before you push:
 
-Optional — match CI before you push:
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+If **pre-commit-check** fails in CI, open the workflow run → failed job → **Summary** or **log** for fix steps.
+
+Optional — run Ruff directly (lint only; **Black** is the format gate in CI):
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-ruff format --force-exclude .
 ruff check --fix --force-exclude .
-ruff check --force-exclude . && ruff format --check --force-exclude .
+ruff check --force-exclude .
 ```
 
 **zsh:** Don’t put **`# comments` on the same line** as `ruff`/`python` commands when pasting — if `interactivecomments` is off, the shell can pass `#`, `apply`, etc. as extra arguments and Ruff will look for files with those names. Use comments on their own line or run commands one at a time.
 
-The **`ruff`** line in **`requirements.txt`** is pinned to match [workflow-python’s default `ruff_version`](https://github.com/thadiust/workflow-python/blob/main/README.md); bump both when you upgrade.
+The **`ruff`** line in **`requirements.txt`** is pinned to match [workflow-python’s pre-commit Ruff rev](https://github.com/thadiust/workflow-python/blob/main/.pre-commit-config.yaml); bump both when you upgrade.
 
 ### Editor / type checker (“could not be resolved”)
 
@@ -46,11 +53,14 @@ For **running** the app you still need **`pip install -r requirements.txt`** (us
 
 Workflow runs on **pull requests** to `main`, **pushes** to `main`, and **workflow_dispatch**. The caller sets **`permissions: contents: read`**; **`workflow-python`** applies **`concurrency`** with **`cancel-in-progress`** on the reusable jobs so rapid pushes do not pile up runs.
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** (same for **actionlint** and **dependency-review** workflows — all **`@main`**). It sets **`permissions: security-events: write`** so **Gitleaks** / **Bandit** / **Trivy** SARIF can upload to **Code Scanning**. It sets **`enforce_pip_tools_lockfile: true`** so the committed **`requirements.txt`** must match **`pip-compile`** output from **`requirements.in`** (same install graph for **pytest** and **pip-audit**). It sets **`pytest_requirements_file: "requirements.txt"`** explicitly (same value as **`requirements_file`**, documented in YAML). It sets explicit **`ruff_version`**, **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) calls **`thadiust/workflow-python/.github/workflows/ci.yml@main`** (same for **dependency-review** — all **`@main`**). It sets **`permissions: security-events: write`** so **Gitleaks** / **Bandit** / **Trivy** SARIF can upload to **Code Scanning**. It sets **`enforce_pip_tools_lockfile: true`** so the committed **`requirements.txt`** must match **`pip-compile`** output from **`requirements.in`** (same install graph for **pytest** and **pip-audit**). It sets **`pytest_requirements_file: "requirements.txt"`** explicitly (same value as **`requirements_file`**, documented in YAML). It sets **`pytest_version: "9.0.2"`**, **`run_pytest: true`**, and **`upload_code_scanning: true`**.
 
-- **Ruff** (lint + format check) and **pytest** (unit tests) **in parallel**
-- **Gitleaks** (full git history) after **Ruff and pytest** pass or are skipped (`run_pytest: false` skips pytest so Gitleaks can still run)
-- **Bandit** and **pip-audit** in parallel after **Gitleaks** (each waits on Ruff, Gitleaks, and pytest)
+**Pipeline order** (see [workflow-python README](https://github.com/thadiust/workflow-python/blob/main/README.md)):
+
+- **pre-commit-check** ∥ **gitleaks-scan** (full git history + SARIF when enabled)
+- **pytest** (after both gates above)
+- **Trivy repo** ∥ **Bandit** ∥ **pip-audit** (after pytest)
+- **Docker build** → **Trivy image** (when enabled)
 
 **Expected behavior:** the workflow run **fails** if any **enabled** job reports a problem (**lint/format**, **secrets**, **Bandit issues**, or **dependency vulnerabilities**, per settings). It **passes** only when **all enabled jobs** succeed.
 
